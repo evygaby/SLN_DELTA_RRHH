@@ -13,8 +13,15 @@ namespace Api
     public partial interface IDeltaContextProcedures
     {
         Task<EMP> consultarEMPID(int ID);
-        Task<List<EMP>> consultarEMP(string usu,string pass);
-        Task<Dictionary<bool, string>> GuardarTabla(EMP clase);
+      
+        List<T> Consultar<T>(T objeto, string usu, string pass);
+        List<T> consultarXId<T>(T objeto, string usu,string pass,int idempresa);
+        List<T> consultaRAW<T>(T objeto, string sentencia, string usu, string pass);
+        Task<Dictionary<bool, string>> Guardar<T>(T eMP, string usu, string pass);
+        Task<Dictionary<bool, string>> delete<T>(T objeto, string campowhere, string valorwhere, string usu, string pass);
+        Task<Dictionary<bool, string>> Update<T>(T objeto, string campowhere, string valorwhere, string usu, string pass);
+        int ConsultarUltimoCODEMP<T>(T objeto, string usu, string pass);
+        int ConsultarnumeroUltimoRegistro<T>(T objeto, string campo, string usu, string pass);
         Task<List<Login>> QRY_Login(string usuario, string pass, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
   
 

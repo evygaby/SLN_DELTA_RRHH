@@ -6,8 +6,8 @@ namespace Api.Modelos
     {
         [Key]
         public string? GCODCCOSTO { get; set; }
-        public int? CODEMPLEADO { get; set; }
-        public int? IDEMPRESA { get; set; }
+        public decimal? CODEMPLEADO { get; set; }
+        public decimal? IDEMPRESA { get; set; }
         public string? ESTADO_GR { get; set; }
 
     }

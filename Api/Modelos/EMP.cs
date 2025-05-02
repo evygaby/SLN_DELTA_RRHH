@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Runtime.Intrinsics.Arm;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Api.Modelos
 {
@@ -44,7 +45,7 @@ namespace Api.Modelos
         public decimal? MNT_DIC { get; set; }
         public decimal? HOR_DIC { get; set; }
         public decimal? BENEFICIO { get; set; }
-        public double CODGRUPO { get; set; }
+        public Int16? CODGRUPO { get; set; }
         public decimal? MNT_ABRIL { get; set; }
         public decimal? MNT_ABRIL1 { get; set; }
         public decimal? MNT_ABRIL2 { get; set; }
@@ -58,7 +59,7 @@ namespace Api.Modelos
         public string? LIC_ENFERMEDAD { get; set; }
         public DateTime? FEC_ENFERMEDADI { get; set; }
         public DateTime? FEC_ENFERMEDADF { get; set; }
-        public string NOMBRE_INVITACION { get; set; }
+        public string? NOMBRE_INVITACION { get; set; }
         public string? REQUIERE_TRANSP { get; set; }
         public string? CALLE_SRI { get; set; }
         public decimal? NUMERO_SRI { get; set; }
@@ -87,7 +88,7 @@ namespace Api.Modelos
         public decimal? PORC_DISCAPACIDAD { get; set; }
         public string? COND_DISCAPACIDAD { get; set; }
         public string? TIPO_DOC_DISCAPACIDAD { get; set; }
-        public string ID_DISCAPACIDAD { get; set; }
+        public string? ID_DISCAPACIDAD { get; set; }
         public string? NIVELESTUDIO { get; set; }
         public string? NOMBRECONYUGE { get; set; }
         public DateTime? FECHAMATRICIVIL { get; set; }
@@ -99,10 +100,10 @@ namespace Api.Modelos
         public string? OTROPARENTEMERGENCIA { get; set; }
         public string? TELEFONOEMERGENCIA { get; set; }
         public string? SEGUROPARTICULAR { get; set; }
-        public string DISCAP_AUDITIVA { get; set; }
-        public string DISCAP_VISUAL { get; set; }
-        public string DISCAP_FISICA { get; set; }
-        public string DISCAP_INTELECTUAL { get; set; }
+        public string? DISCAP_AUDITIVA { get; set; }
+        public string? DISCAP_VISUAL { get; set; }
+        public string? DISCAP_FISICA { get; set; }
+        public string? DISCAP_INTELECTUAL { get; set; }
         public DateTime? FECHAACTUALIZA { get; set; }
         public string? USRACTUALIZA { get; set; }
       
@@ -132,7 +133,19 @@ namespace Api.Modelos
         public string? NACIONALIDAD { get; set; }
         public int? ANTIGUEDAD { get; set; }
         public string? PERTENECE_OBRA { get; set; }
-
+        [NotMapped]
+        public List<rh_familiar_discapacidad>? FamiliarDiscapicidad { get; set; }
+        [NotMapped]
+        public List<rh_cargas_empleados>? FamiliarCargas { get; set; }
+        public List<rh_familiar_enfermedad>? FamiliarEnfermedad { get; set; }
+        public List<detalle_grupocentrocosto>? CentroCosto { get; set; }
+        public List<crgemp>? Cargos { get; set; }
+        public List<grupo_centrocosto>? Grupo { get; set; }
+        public List<crgdep>? Departamentos { get; set; }
+        public List<CGTEMPCTAS>? CuentasContables { get; set; }    
+        public List<NUMCTABCO>? CuentasBancos { get; set; }
+        public List<titulosacademicos_emp>? Titulos { get; set; }
+        public List<SUELDOS>? Sueldos { get; set; }
 
 
     }

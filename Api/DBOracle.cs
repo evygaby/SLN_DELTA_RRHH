@@ -174,6 +174,7 @@ namespace Api
         {
             string cadena = null;
             cadena = "DATA SOURCE="+datasource +";PASSWORD="+ pass + ";PERSIST SECURITY INFO=True;USER ID="+usuario+";pooling=false;";
+            info.CadenaConexion = cadena;
             return cadena;
         }
         /// <summary>
@@ -212,7 +213,7 @@ namespace Api
             return ok;
 
         }
-        public bool EjecutaSPR(string SpName, string? PERIODO, string? nivel, string paralelo, string? codigo)
+        public bool EjecutaSPR(string SpName, string? tabla,string usu, string pass)
         {
             bool ok = true;
             try
@@ -220,6 +221,7 @@ namespace Api
                 // Si no esta conectado, se conecta.
                 if (!IsConected())
                 {
+                    crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
                     ok = Conectar();
                 }
                 if (ok)
@@ -233,10 +235,7 @@ namespace Api
                     OraCommand.Connection = ora_Connection;
                     OraCommand.CommandText = SpName;
                     OraCommand.CommandType = CommandType.StoredProcedure;     
-                    OraCommand.Parameters.Add("CODIGO", codigo);
-                    OraCommand.Parameters.Add("PV_PERIODO", PERIODO);
-                    OraCommand.Parameters.Add("PV_NIVELES", nivel);
-                    OraCommand.Parameters.Add("PV_PARALELOS", paralelo);
+                    OraCommand.Parameters.Add("nom_tabla", tabla);         
                     OraCommand.Parameters.Add("LISTA", OracleDbType.RefCursor);
                     OraCommand.Parameters["LISTA"].Direction = ParameterDirection.Output;
                    // OraCommand.ExecuteNonQuery();
@@ -254,7 +253,81 @@ namespace Api
 
         }
 
+        public bool Ejecuta(string SpName, string? sentencia, string usu, string pass)
+        {
+            bool ok = true;
+            try
+            {
+                // Si no esta conectado, se conecta.
+                if (!IsConected())
+                {
+                    crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+                    ok = Conectar();
+                }
+                if (ok)
+                {
+                    if ((ora_DataReader != null))
+                    {
+                        ora_DataReader.Close();
+                        ora_DataReader.Dispose();
+                    }
+                    OracleCommand OraCommand = new OracleCommand();
+                    OraCommand.Connection = ora_Connection;
+                    OraCommand.CommandText = SpName;
+                    OraCommand.CommandType = CommandType.StoredProcedure;
+                    OraCommand.Parameters.Add("sentencia", sentencia);
+                    OraCommand.Parameters.Add("LISTA", OracleDbType.RefCursor);
+                    OraCommand.Parameters["LISTA"].Direction = ParameterDirection.Output;
 
+                    ora_DataReader = OraCommand.ExecuteReader();
+                }
+            }
+            catch (Exception ex)
+            {
+                AsignarError(ref ex);
+                ok = false;
+            }
+
+            return ok;
+
+        }
+        public bool AfectarTabla(string SpName, string? sentencia, string usu, string pass)
+        {
+            bool ok = true;
+            try
+            {
+                // Si no esta conectado, se conecta.
+                if (!IsConected())
+                {
+                    crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+                    ok = Conectar();
+                }
+                if (ok)
+                {
+                    if ((ora_DataReader != null))
+                    {
+                        ora_DataReader.Close();
+                        ora_DataReader.Dispose();
+                    }
+                    OracleCommand OraCommand = new OracleCommand();
+                    OraCommand.Connection = ora_Connection;
+                    OraCommand.CommandText = SpName;
+                    OraCommand.CommandType = CommandType.StoredProcedure;
+                    OraCommand.Parameters.Add("sentencia", sentencia);
+                    int res = OraCommand.ExecuteNonQuery();
+                    ok = true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                AsignarError(ref ex);
+                ok = false;
+            }
+
+            return ok;
+
+        }
         public bool login(string SpName, string? usu, string? pass)
         {
             bool ok = true;

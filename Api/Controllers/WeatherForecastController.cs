@@ -36,33 +36,29 @@ namespace Api.Controllers
         }
 
 
-        [HttpGet(Name = "Empleados")]
-        public async Task<IActionResult> Empleados()
-        {
-        return Ok(_contextp.consultarEMP("",""));
-        }
+    
 
        [HttpGet(Name = "GetWeatherForecast")]
         public  async Task<IActionResult> Get()
         {
          
             EMP mP = new EMP();
-            mP.MAIL = "YO";
-            mP.CODGRUPO = 7;
-            mP.NOMBRES = "Hector Montero";
-            mP.NOMBRES = "Hector Montero";
-            var resuy= await  _contextp.GuardarTabla(mP);
-            foreach (KeyValuePair<bool, String> entry in resuy)
-            {
-                if (entry.Key == true)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest(entry.Value);
-                }
-            }
+            //mP.MAIL = "YO";
+            //mP.CODGRUPO = 7;
+            //mP.NOMBRES = "Hector Montero";
+            //mP.NOMBRES = "Hector Montero";
+            //var resuy= await  _contextp.GuardarTabla(mP);
+            //foreach (KeyValuePair<bool, String> entry in resuy)
+            //{
+            //    if (entry.Key == true)
+            //    {
+            //        return Ok();
+            //    }
+            //    else
+            //    {
+            //        return BadRequest(entry.Value);
+            //    }
+            //}
             return Ok();
         }
        
