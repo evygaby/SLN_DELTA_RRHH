@@ -126,12 +126,12 @@ namespace Api.Modelos
         public string? LIC_SINSUELDO_EMPR { get; set; }
         public DateTime? FEC_SINSUELDOEMPR_INI { get; set; }
         public DateTime? FEC_SINSUELDOEMPR_FIN { get; set; }
-        public int? DIAS_PAG_SINSUELDOEMPR { get; set; }
+        public decimal? DIAS_PAG_SINSUELDOEMPR { get; set; }
         public string? PRIMER_NOMBRE { get; set; }
         public string? SEGUNDO_NOMBRE { get; set; }
         public decimal? CODIGO_IESS_JUB { get; set; }
         public string? NACIONALIDAD { get; set; }
-        public int? ANTIGUEDAD { get; set; }
+        public decimal? ANTIGUEDAD { get; set; }
         public string? PERTENECE_OBRA { get; set; }
         [NotMapped]
         public List<rh_familiar_discapacidad>? FamiliarDiscapicidad { get; set; }
