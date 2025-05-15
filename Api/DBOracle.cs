@@ -252,6 +252,45 @@ namespace Api
             return ok;
 
         }
+        public bool EjecutaSimple(string SpName, int? idempresa, string usu, string pass)
+        {
+            bool ok = true;
+            try
+            {
+                // Si no esta conectado, se conecta.
+                if (!IsConected())
+                {
+                    crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+                    ok = Conectar();
+                }
+                if (ok)
+                {
+                    if ((ora_DataReader != null))
+                    {
+                        ora_DataReader.Close();
+                        ora_DataReader.Dispose();
+                    }
+                    OracleCommand OraCommand = new OracleCommand();
+                    OraCommand.Connection = ora_Connection;
+                    OraCommand.CommandText = SpName;
+                    OraCommand.CommandType = CommandType.StoredProcedure;
+                    OraCommand.Parameters.Add("PN_EMPRESA", idempresa);
+                    OraCommand.Parameters.Add("LISTA", OracleDbType.RefCursor);
+                    OraCommand.Parameters["LISTA"].Direction = ParameterDirection.Output;
+                    // OraCommand.ExecuteNonQuery();
+                    ora_DataReader = OraCommand.ExecuteReader();
+                    //      var kiekis = Convert.ToString(OraCommand.Parameters["LISTA"].Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                AsignarError(ref ex);
+                ok = false;
+            }
+
+            return ok;
+
+        }
 
         public bool Ejecuta(string SpName, string? sentencia, string usu, string pass)
         {

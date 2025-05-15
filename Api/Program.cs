@@ -43,8 +43,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 
+app.UseStaticFiles();
+app.UseAuthorization();
+app.MapFallbackToFile("index.html");
 app.MapControllers();
 
 app.Run();

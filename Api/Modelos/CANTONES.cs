@@ -4,7 +4,7 @@ namespace Api.Modelos
 {
     public class CANTONES
     {
-        
+        [Key]
         public int  CODCANTON { get; set; }
         public string? CODPROV { get; set; }
         public string? CODPAIS { get; set; }

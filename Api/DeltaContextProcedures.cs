@@ -241,6 +241,44 @@ namespace Api
             return personList;
         }
 
+
+        public virtual List<SEGUROS > Consultarseguro(int idempresa, string usu, string pass)
+        {
+          
+            List<SEGUROS> personList = new List<SEGUROS>();
+            DBOracle DB = new DBOracle();
+            DB.crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+
+            try
+            {
+                if (DB.EjecutaSimple("rh_mantenimientos.qry_tiposeguro", idempresa, usu, pass))
+                {
+                    while (DB.ora_DataReader.Read())
+                    {
+                        for (int i = 0; i < DB.ora_DataReader.FieldCount; i++)
+                        {
+                            SEGUROS sEGUROS = new SEGUROS();
+                            string val = DB.ora_DataReader[i].ToString();
+                           
+                        }
+
+
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                DB.Dispose();
+            }
+            return personList;
+        }
+
+
         public virtual List<T> consultaRAW<T>(T objeto, string sentencia, string usu, string pass)
         {
             List<T> personList = new List<T>();
@@ -500,7 +538,76 @@ namespace Api
 
             return countQuery;
         }
-     
+        public virtual async Task<Dictionary<bool, string>> Updatecodigostring<T>(T eMP, string campowhere, string valorwhere, string usu, string pass)
+        {
+            T obj = default(T);
+            obj = Activator.CreateInstance<T>();
+            obj = eMP;
+            DBOracle DB = new DBOracle();
+            var countQuery = new Dictionary<bool, string>();
+            StringBuilder query = new StringBuilder("update " + obj.GetType().Name + " SET ");
+
+            foreach (PropertyInfo prop in obj.GetType().GetProperties())
+            {
+                if (prop.GetValue(obj) != null)
+                {
+                    var valu = prop.GetValue(obj);
+                    var type = prop.GetType();
+                    if (prop.PropertyType.Name != "List`1")
+                    {
+                        const string quote = "\'";
+                        query.Append(prop.Name + "=");
+                        if (prop.PropertyType == typeof(string) || prop.PropertyType == typeof(DateTime?))
+                        {
+
+                            if (prop.PropertyType == typeof(DateTime?))
+                            {
+                                var date = DateTime.Parse(valu.ToString()).ToString("dd/MM/yyyy");
+                                query.Append(quote + date + quote + ",");
+                            }
+                            else
+                            {
+                                query.Append(quote + valu + quote + ",");
+                            }
+
+                        }
+                        else
+                        {
+                            query.Append(valu + ",");
+
+                        }
+                    }
+                }
+            }
+            query = query.Remove(query.Length - 1, 1);
+            query = query.Append(" where " + campowhere + "='" + valorwhere+"'");
+            try
+            {
+                if (DB.AfectarTabla("rh_mantenimientos.AfectarTabla", query.ToString(), usu, pass))
+                {
+                    countQuery.Add(true, DB.ErrDesc);
+
+                }
+                else
+                {
+                    countQuery.Add(false, DB.ErrDesc);
+                }
+            }
+            catch (Exception ex)
+            {
+
+
+                countQuery.Add(false, ex.Message);
+            }
+            finally
+            {
+                DB.Dispose();
+            }
+
+            return countQuery;
+        }
+
+
 
         public virtual async Task<List<Login>> QRY_Login(string usuario, string pass, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {

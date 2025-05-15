@@ -2,6 +2,7 @@
 {
     public class titulosacademicos_emp
     {
+        public decimal? IDTITULO { get; set; }
         public Int16? CODEMP { get; set; }
         public string? NIVEL { get; set; }
         public string? TITULO { get; set; }
@@ -13,6 +14,7 @@
         public string? ESTADO { get; set; }
         public string? ANIOGRADUAPREVISTA { get; set; }
         public string? NIV_EN_CURSO { get; set; }
+        public Int16? ID_EMPRESA { get; set; }
 
     }
 }

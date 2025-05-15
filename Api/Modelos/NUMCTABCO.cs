@@ -8,7 +8,7 @@
         public decimal? PORCENT { get; set; }
         public string? TIPO_CUENTA { get; set; }
         public string? TIPPERSONA { get; set; }
-
+        public decimal? ID_EMPRESA { get; set; }
         public string? ESTADO { get; set; }
 
     }

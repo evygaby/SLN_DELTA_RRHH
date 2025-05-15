@@ -11,5 +11,6 @@
         public decimal? ID_EMPRESA { get; set; }
         public string? CARGO_PRINCIPAL { get; set; }
 
+
     }
 }
