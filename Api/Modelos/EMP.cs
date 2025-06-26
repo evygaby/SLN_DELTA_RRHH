@@ -106,7 +106,7 @@ namespace Api.Modelos
         public string? DISCAP_INTELECTUAL { get; set; }
         public DateTime? FECHAACTUALIZA { get; set; }
         public string? USRACTUALIZA { get; set; }
-      
+       
         public string? REFERENCIADOMICILIO { get; set; }
         public string? CONTACTOEMERGENCIA2 { get; set; }
         public string? PARENTESCOEMERGENCIA2 { get; set; }

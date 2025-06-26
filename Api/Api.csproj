@@ -16,4 +16,8 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infra.Logging\Infra.Logging.csproj" />
+  </ItemGroup>
+
 </Project>

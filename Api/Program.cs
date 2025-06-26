@@ -1,7 +1,7 @@
 using Api;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
-
+using Infra.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +13,8 @@ ClsConfig.DATA_SOURCE = builder.Configuration.GetSection("DATA_SOURCE").Value;
 ClsConfig.PASSWORD = builder.Configuration.GetSection("PASSWORD").Value;
 var connectioinOracle = dB.crearcadena(ClsConfig.DATA_SOURCE, ClsConfig.USER_ID, ClsConfig.PASSWORD);
 ClsConfig.cadenaoracle = connectioinOracle;
+builder.Logging.ClearProviders();
+builder.Logging.AddCustomLogging("C:\\Logs\\Dinamico");
 builder.Services.AddDbContext<ModelOracleContext>(options => options.UseOracle(connectioinOracle));
 builder.Services.AddScoped<IDeltaContextProcedures, DeltaContextProcedures>();
 builder.Services.AddControllers();

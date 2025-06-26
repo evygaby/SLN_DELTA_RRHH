@@ -17,6 +17,7 @@ namespace Api
         List<SEGUROS> Consultarseguro(int idempresa, string usu, string pass);
         List<T> Consultar<T>(T objeto, string usu, string pass);
         List<T> consultarXId<T>(T objeto, string usu,string pass,int idempresa);
+        List<T> consultarEMP<T>(T objeto, string usu, string pass, int idempresa);
         List<T> consultaRAW<T>(T objeto, string sentencia, string usu, string pass);
         Task<Dictionary<bool, string>> Guardar<T>(T eMP, string usu, string pass);
         Task<Dictionary<bool, string>> delete<T>(T objeto, string campowhere, string valorwhere, string usu, string pass);

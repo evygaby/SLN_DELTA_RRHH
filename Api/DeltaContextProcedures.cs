@@ -335,6 +335,34 @@ namespace Api
 
         }
 
+        public virtual List<T> consultarEMP<T>(T objeto, string usu, string pass, int idempresa)
+        {
+            List<T> personList = new List<T>();
+            DBOracle DB = new DBOracle();
+            T obj = default(T);
+            obj = Activator.CreateInstance<T>();
+            obj = objeto;
+            DB.crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+            string sql2 = "select * from " + obj.GetType().Name + " where ACTIVO='S' AND ID_EMPRESA = " + idempresa+ " order by razonsocial";
+            try
+            {
+                if (DB.Ejecuta("rh_mantenimientos.consultasimple", sql2, usu, pass))
+                {
+
+                    personList = DataReaderMapToList<T>(DB.ora_DataReader);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                DB.Dispose();
+            }
+            return personList;
+
+        }
+
         public virtual async Task<EMP> consultarEMPID(int ID)
         {
             List<EMP> personList = new List<EMP>();

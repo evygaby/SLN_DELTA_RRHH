@@ -12,10 +12,10 @@ namespace Api.Controllers
     public class EmpleadosController : Controller
     {
         private readonly IDeltaContextProcedures _contextp;
-
-        public EmpleadosController(IDeltaContextProcedures deltaContextProcedures)
+        private readonly ILogger<EmpleadosController> _logger;
+        public EmpleadosController(ILogger<EmpleadosController> logger,IDeltaContextProcedures deltaContextProcedures)
         {
-           
+            _logger = logger;
             _contextp = deltaContextProcedures;
            
         }
@@ -37,13 +37,13 @@ namespace Api.Controllers
             titulosacademicos_emp titulosacademicos = new titulosacademicos_emp();
            // var SUELDOS = _contextp.consultaRAW(sUELDOS, "select r.codemp,r.fecha,r.tipcontrato,GET_NOMCCOSTO(R.CODCCOSTO, R.ID_EMPRESA) centro_costo,\r\nR.A_PAGAR,\r\n(select I.MONTO from developer1.rol_ingresos i where i.fecha=r.fecha and i.codemp=r.codemp and i.codrubro='SD') SUELDO,\r\n(select I.MONTO from developer1.rol_ingresos i where i.fecha=r.fecha and i.codemp=r.codemp and i.codrubro='HE') EXTRAS,\r\n(select I.MONTO from developer1.rol_ingresos i where i.fecha=r.fecha and i.codemp=r.codemp and i.codrubro='HO') OTROS,\r\nR.MONTOI INGRESOS,R.MONTOE EGRESOS,R.DIAS_ENF,R.DIAS_MAT,NVL(R.DIAS_SINSUELDO,0) SINSUELDO\r\n  from developer1.rol_mensual r  WHERE R.ID_EMPRESA=" + idempresa, usu, contrasena);
 
-            var Departamentos = _contextp.consultaRAW(crgdep, "SELECT c.activo, c.codemp, C.CODCRG,  D.CODDEP,  S.codsec,C.ID_EMPRESA,C.CARGO_PRINCIPAL FROM crgemp C\r\nINNER JOIN secciones S ON C.codsec= S.codsec\r\nINNER JOIN crgdep d ON D.codCrG= c.codCrG AND D.CODDEP= S.CODDEP AND C.ID_EMPRESA=" + idempresa, usu, contrasena);
+            var Departamentos = _contextp.consultaRAW(crgdep, "SELECT c.activo, c.codemp, C.CODCRG,  D.CODDEP,  S.codsec,C.ID_EMPRESA,C.CARGO_PRINCIPAL FROM crgemp C\r\nINNER JOIN secciones S ON C.codsec= S.codsec\r\nINNER JOIN crgdep d ON D.codCrG= c.codCrG AND D.CODDEP= S.CODDEP AND C.ID_EMPRESA=" + idempresa+ " and d.id_empresa="+idempresa, usu, contrasena);
             var CuentasContables = _contextp.consultaRAW(gTEMPCTAS, "SELECT c.ACTIVO, c.TIPO_CTA,C.CODEMP,C.ID_EMPRESA,C.PLA_CODCNTA\r\nFROM   FINANZAS.CN_CUENTA T\r\ninner join CGTEMPCTAS C  on c.pla_codcnta=T.cuenta\r\nWHERE  T.ID_PADRE IN (41415, 41918, 3540,343)\r\nAND    T.STATUS = 1\r\nAND T.ID_EMPRESA =" + idempresa, usu, contrasena);
             var CuentasBancos = _contextp.consultaRAW(uMCTABCO, "select ESTADO,ID_EMPRESA,CODPERSONA,CODBANCO,CTABCO,PORCENT,TIPO_CUENTA,TIPPERSONA from NUMCTABCO where id_empresa=" + idempresa, usu, contrasena);
             var Grupo = _contextp.consultaRAW(detalle_grupocentrocosto, "select * from detalle_grupocentrocosto", usu, contrasena);
             var Cargos = _contextp.consultaRAW(crgemp, "select * from crgemp where id_empresa="+idempresa, usu, contrasena);
             var Titulos = _contextp.consultaRAW(titulosacademicos, "SELECT IDTITULO,ID_EMPRESA, CODEMP,NIVEL,TITULO,PAIS,INSTITUCION,ESTADOESTUDIO,REGSENESCYT ,NUMREGSENESCYT,ESTADO,ANIOGRADUAPREVISTA ,NIV_EN_CURSO FROM titulosacademicos_emp where id_empresa=" + idempresa, usu, contrasena);
-            var emmpleados = _contextp.consultarXId<EMP>(empleado, usu, contrasena, idempresa).ToList();
+            var emmpleados = _contextp.consultarEMP<EMP>(empleado, usu, contrasena, idempresa).ToList();
             var cargas = _contextp.consultaRAW(rh_cargas, "select * from rh_cargas_empleados where id_empresa="+idempresa, usu, contrasena);
             var enferedades = _contextp.consultaRAW(rh_enfermedad, "select * from rh_familiar_enfermedad where id_empresa="+idempresa, usu, contrasena);
             var discapacidad = _contextp.consultaRAW(rh_discapacidad, "select * from rh_familiar_discapacidad where id_empresa="+idempresa, usu, contrasena);
@@ -77,7 +77,22 @@ namespace Api.Controllers
             return Ok(_contextp.consultarXId<centrocosto>(paises, usu, contrasena, idempresa));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> JEFAS(string usu, string contrasena)
 
+        {
+            JEFAS paises = new JEFAS();
+            return Ok(_contextp.consultaRAW(paises, "select CODEMP,RAZONSOCIAL from EMP where ACTIVO='S'  order by razonsocial", usu, contrasena));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GCENTROCOSTO2(string usu, string contrasena)
+
+        {
+            grupo_centrocosto paises = new grupo_centrocosto();
+            return Ok(_contextp.consultaRAW(paises, "select * from grupo_centrocosto", usu, contrasena));
+        }
         [HttpGet]
         public async Task<IActionResult> CUENTAS(string usu, string contrasena, int idempresa)
 
@@ -178,6 +193,12 @@ namespace Api.Controllers
             return Ok(_contextp.Consultar<CANTONES>(paises, usu, contrasena));
         }
         [HttpGet]
+        public async Task<IActionResult> CUIDADES(string usu, string contrasena)
+        {
+            CIUDADES paises = new CIUDADES();
+            return Ok(_contextp.Consultar<CIUDADES>(paises, usu, contrasena));
+        }
+        [HttpGet]
         public async Task<IActionResult> EMPRESAS(string usu, string contrasena)
         {
             Empresa paises = new Empresa();
@@ -218,6 +239,7 @@ namespace Api.Controllers
 
             try
             {
+                _logger.LogInformation("guardando");
                 var ID = _contextp.ConsultarUltimoCODEMP(value, usu, contrasena);
                 value.CODEMP = ID + 1;
                 var resuy = await _contextp.Guardar(value, usu, contrasena);
@@ -311,6 +333,7 @@ namespace Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.InnerException.ToString());
                 return BadRequest(new { message = ex.Message });
             }
            
@@ -320,6 +343,10 @@ namespace Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, [FromBody] EMP value, string usu, string contrasena)
         {
+            try { 
+            
+     
+         
             var res5 = new Dictionary<bool, string>();
             var res4 = new Dictionary<bool, string>();
             var res3 = new Dictionary<bool, string>();
@@ -330,7 +357,7 @@ namespace Api.Controllers
             var titulos = new Dictionary<bool, string>();
             var resuy = await _contextp.Update(value, "CODEMP", value.CODEMP.ToString(), usu, contrasena);
             res1 = await _contextp.delete(new rh_cargas_empleados(), "CODEMP", value.CODEMP.ToString(), usu, contrasena);
-            foreach (rh_cargas_empleados item in value.FamiliarCargas!)
+            foreach (rh_cargas_empleados item in value.FamiliarCargas! ?? new List<rh_cargas_empleados>())
 
             {   
                 var sec =  _contextp.ConsultarnumeroUltimoRegistro(item, "ID_HIJO", usu, contrasena);
@@ -340,7 +367,7 @@ namespace Api.Controllers
                 resuy = await _contextp.Guardar(item, usu, contrasena);
             }
             cargos = await _contextp.delete(new crgemp(), "CODEMP", value.CODEMP.ToString(), usu, contrasena);
-            foreach (crgdep item in value.Departamentos!)
+            foreach (crgdep item in value.Departamentos! ?? new List<crgdep>())
 
             {
                 var sec = _contextp.ConsultarnumeroUltimoRegistro(new crgemp(), "IDCRGEMP", usu, contrasena);
@@ -357,7 +384,7 @@ namespace Api.Controllers
                 resuy = await _contextp.Guardar(crgemp, usu, contrasena);
             }
             res6 = await _contextp.delete(new detalle_grupocentrocosto(), "CODEMPLEADO", value.CODEMP.ToString(), usu, contrasena);
-            foreach (detalle_grupocentrocosto item in value.CentroCosto!)
+            foreach (detalle_grupocentrocosto item in value.CentroCosto! ?? new List<detalle_grupocentrocosto>())
             {
 
                 item.CODEMPLEADO = (short?)value.CODEMP;
@@ -365,7 +392,7 @@ namespace Api.Controllers
                 resuy = await _contextp.Guardar(item, usu, contrasena);
             }
             titulos  = await _contextp.delete(new titulosacademicos_emp(), "CODEMP", value.CODEMP.ToString(), usu, contrasena);
-            foreach (titulosacademicos_emp item in value.Titulos!)
+            foreach (titulosacademicos_emp item in value.Titulos! ?? new List<titulosacademicos_emp>())
             {
                 var sec = _contextp.ConsultarnumeroUltimoRegistro(item, "IDTITULO", usu, contrasena);
                 item.CODEMP = (short?)value.CODEMP;
@@ -375,7 +402,7 @@ namespace Api.Controllers
             }
 
             res2 = await _contextp.delete(new CGTEMPCTAS(), "CODEMP", value.CODEMP.ToString(), usu, contrasena);
-            foreach (CGTEMPCTAS item in value.CuentasContables!)
+            foreach (CGTEMPCTAS item in value.CuentasContables! ?? new List<CGTEMPCTAS>())
             {
 
                 item.CODEMP = (short?)value.CODEMP;
@@ -383,7 +410,7 @@ namespace Api.Controllers
                 resuy = await _contextp.Guardar(item, usu, contrasena);
             }
             res2 = await _contextp.delete(new rh_familiar_discapacidad(), "CODEMP", value.CODEMP.ToString(), usu, contrasena);
-            foreach (rh_familiar_discapacidad item in value.FamiliarDiscapicidad!)
+            foreach (rh_familiar_discapacidad item in value.FamiliarDiscapicidad! ?? new List<rh_familiar_discapacidad>())
             {
                 var sec = _contextp.ConsultarnumeroUltimoRegistro(item, "IDFAMILIA", usu, contrasena);
                 item.IDFAMILIA = sec;
@@ -393,7 +420,7 @@ namespace Api.Controllers
             }
 
             res5 = await _contextp.delete(new NUMCTABCO(), "CODPERSONA", value.CODEMP.ToString(), usu, contrasena);
-            foreach (NUMCTABCO item in value.CuentasBancos!)
+            foreach (NUMCTABCO item in value.CuentasBancos! ?? new List<NUMCTABCO>())
             {
                 item.TIPPERSONA = "E";
                 item.CODPERSONA = (short?)value.CODEMP;
@@ -403,7 +430,7 @@ namespace Api.Controllers
 
             res3 = await _contextp.delete(new rh_familiar_enfermedad(), "CODEMP", value.CODEMP.ToString(), usu, contrasena);
 
-            foreach (rh_familiar_enfermedad item in value.FamiliarEnfermedad!)
+            foreach (rh_familiar_enfermedad item in value.FamiliarEnfermedad! ?? new List<rh_familiar_enfermedad>())
             {
                 var sec = _contextp.ConsultarnumeroUltimoRegistro(item, "IDFAMILIA", usu, contrasena);
                 item.IDFAMILIA = sec;
@@ -455,6 +482,12 @@ namespace Api.Controllers
             }
          
             return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.InnerException.ToString());
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // DELETE api/<EmpleadosController>/5
@@ -462,5 +495,16 @@ namespace Api.Controllers
         public void Delete(int id)
         {
         }
+    }
+
+
+    public class JEFAS
+    {
+
+        public Int16? CODEMP { get; set; }
+        public string? RAZONSOCIAL { get; set; }
+
+
+
     }
 }
