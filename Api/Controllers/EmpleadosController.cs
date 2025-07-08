@@ -222,7 +222,7 @@ namespace Api.Controllers
         public async Task<IActionResult> Secciones(string usu, string contrasena, int idempresa)
         {
             SECCIONES paises = new SECCIONES();
-            return Ok(_contextp.consultaRAW<SECCIONES>(paises, "select codsec,nomsec from SECCIONES where id_empresa=" + idempresa, usu, contrasena));
+            return Ok(_contextp.consultaRAW<SECCIONES>(paises, "select coddep,codsec,nomsec from SECCIONES where id_empresa=" + idempresa, usu, contrasena));
         }
 
         // GET api/<EmpleadosController>/5
