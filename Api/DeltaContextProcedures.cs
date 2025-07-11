@@ -343,7 +343,7 @@ namespace Api
             obj = Activator.CreateInstance<T>();
             obj = objeto;
             DB.crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
-            string sql2 = "select * from " + obj.GetType().Name + " where ID_EMPRESA = " + idempresa+ " order by razonsocial";
+            string sql2 = "select * from " + obj.GetType().Name + " where ID_EMPRESA = " + idempresa+ " order by ACTIVO,razonsocial";
             try
             {
                 if (DB.Ejecuta("rh_mantenimientos.consultasimple", sql2, usu, pass))
