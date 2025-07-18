@@ -278,6 +278,70 @@ namespace Api
             return personList;
         }
 
+        public List<MenuDto> MenuPerfilUsuario(int codemp, string usuario, string pass, OutputParameter<int> returnValue, CancellationToken cancellationToken)
+        {
+            List<MenuDto> ListaMenu = new List<MenuDto>();
+            List<Menu> personList = new List<Menu>();
+            DBOracle DB = new DBOracle();
+
+            DB.crearcadena(ClsConfig.DATA_SOURCE, usuario, pass);
+
+            try
+            {
+
+                if (DB.MenuPerfilUsuario(codemp, usuario, pass))
+                {
+                    personList = DataReaderMapToList<Menu>(DB.ora_DataReader);
+                    List<Menu> tempR1 = (from l1 in personList
+                                             join l2 in personList on l1.ID_MENU equals l2.ID_MENU_NIVEL
+                                             where l2.CONTADOR > 0
+                                             select l1).Distinct().ToList();
+                    foreach (Menu padre in tempR1)
+                    {
+                        MenuDto dato = new MenuDto();
+                        dato.title = true;
+                        dato.name=padre.DESCRIPCION;
+                        dato.url = "";
+                        dato.iconComponent = new iconComponent();
+                        dato.iconComponent.name = padre.URL_IMAGEN;
+                        //Agrego Nivel 2
+                        List<Menu> tempR2 = (from l1 in personList
+                                             join l2 in personList on l1.ID_MENU equals l2.ID_MENU_NIVEL
+                                             where l2.CONTADOR > 0 & l2.ID_MENU == padre.ID_MENU_NIVEL
+                                             select l2).Distinct().ToList();
+                        List<Child> lista = new List<Child>();
+                        foreach (Menu hijo in tempR2)
+                        {
+                            Child dato2 = new Child();
+                            dato2.name = hijo.DESCRIPCION;
+                            dato2.url = hijo.WFRM;
+                            lista.Add(dato2);
+                        }
+                        dato.children= lista;
+                        ListaMenu.Add(dato);
+                    }
+                        
+                        //List<Menu> tempR3 = (from l1 in personList
+                        //                     where l1.CONTADOR > 0 & l1.NIVEL_MENU == 1
+                        //                     select l1).Distinct().ToList();
+                        //List<Menu> tempR4 = (from l1 in personList
+                        //                     join l2 in tempR1 on l1.ID_MENU equals l2.ID_MENU_NIVEL
+                        //                     select l1).Distinct().ToList();
+                    
+
+                }
+
+                    
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                DB.Dispose();
+            }
+            return ListaMenu;
+        }
 
         public virtual List<T> consultaRAW<T>(T objeto, string sentencia, string usu, string pass)
         {
@@ -687,8 +751,6 @@ namespace Api
 
             return null;
         }
-        
-
 
     }
 }

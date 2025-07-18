@@ -5,11 +5,12 @@
 
 
 
-        public int? IdUsuario { get; set; }
-        public string? Nombre { get; set; }
-        public string? password { get; set; }
-        public string? Apellido { get; set; }
-        public string? lastName { get; set; }
-        public string? Email { get; set; }
+        public int CODEMP { get; set; }
+        public string? RAZONSOCIAL { get; set; }
+        public decimal ID_EMPRESA { get; set; }
+        public string? MAIL { get; set; }
+        public string? USU_RRHH { get; set; }
+        //public string? Email { get; set; }
+
     }
 }

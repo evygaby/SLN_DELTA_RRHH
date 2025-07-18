@@ -1,6 +1,8 @@
 ﻿using Api.Modelos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Oracle.ManagedDataAccess.Client;
+using System.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -49,6 +51,8 @@ namespace Api.Controllers
         {
         }
 
+
+       
         [HttpPost()]
         public async Task<ActionResult<Login>> Login(string username, string password)
         {
@@ -58,8 +62,19 @@ namespace Api.Controllers
                 DBOracle dB1 = new DBOracle();
                 ClsConfig.cadenaoracle = dB1.crearcadena(ClsConfig.DATA_SOURCE, username, password);
               var login = dB1.login("proc_k_academico_web.qryloginpass", username, password);
-               
-                return Ok(login);
+                LoginUsuarios  loginusuario = new LoginUsuarios ();
+                Login empleado = new Login();
+               if (login)
+                { 
+                    var usu= _contextp.consultaRAW<Login>(empleado, "SELECT E.RAZONSOCIAL,E.MAIL,E.CODEMP,E.ID_EMPRESA,u.usu_rrhh FROM EMP E inner join sgmusuari u on u.usu_codempl=e.codemp WHERE u.usu_usuario='" + username + "'", username, password).FirstOrDefault();
+                    loginusuario.usuarioLogueado = usu;
+                   loginusuario.Menu=  _contextp.MenuPerfilUsuario( usu.CODEMP, username, password);
+                    return Ok(loginusuario);
+                }
+               else
+                {
+                    return Ok(loginusuario);
+                }
             }
             catch (Exception ex)
             {
@@ -68,6 +83,7 @@ namespace Api.Controllers
             }
 
         }
+        
 
 
     }

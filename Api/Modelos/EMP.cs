@@ -132,7 +132,9 @@ namespace Api.Modelos
         public decimal? CODIGO_IESS_JUB { get; set; }
         public string? NACIONALIDAD { get; set; }
         public decimal? ANTIGUEDAD { get; set; }
+        
         public string? PERTENECE_OBRA { get; set; }
+        
         [NotMapped]
         public List<rh_familiar_discapacidad>? FamiliarDiscapicidad { get; set; }
         [NotMapped]
@@ -146,7 +148,5 @@ namespace Api.Modelos
         public List<NUMCTABCO>? CuentasBancos { get; set; }
         public List<titulosacademicos_emp>? Titulos { get; set; }
         public List<SUELDOS>? Sueldos { get; set; }
-
-
     }
 }

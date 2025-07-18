@@ -27,7 +27,7 @@ namespace Api
         int ConsultarUltimoCODEMP<T>(T objeto, string usu, string pass);
         int ConsultarnumeroUltimoRegistro<T>(T objeto, string campo, string usu, string pass);
         Task<List<Login>> QRY_Login(string usuario, string pass, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-  
+        List<MenuDto> MenuPerfilUsuario(int codemp,string usuario, string pass, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
 
     }
 }

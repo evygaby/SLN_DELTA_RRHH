@@ -1,6 +1,7 @@
 ﻿
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
+using System.Xml.Linq;
 
 namespace Api
 {
@@ -392,21 +393,21 @@ namespace Api
                     OraCommand.Parameters.Add("pv_usuario", usu);
                     OraCommand.Parameters.Add("pv_pass", pass);
              
-                    OraCommand.Parameters.Add("existe", OracleDbType.Varchar2);
+                    OraCommand.Parameters.Add("existe", OracleDbType.Int32);
+                    //OraCommand.Parameters["existe"].Size = 100;
                     OraCommand.Parameters["existe"].Direction = ParameterDirection.Output;
                     OraCommand.Parameters.Add("lgerror", OracleDbType.Varchar2);
+                    OraCommand.Parameters["lgerror"].Size = 100;
                     OraCommand.Parameters["lgerror"].Direction = ParameterDirection.Output;
                     ora_DataReader = OraCommand.ExecuteReader();
                    var kiekis = Convert.ToString(OraCommand.Parameters["existe"].Value);
                     var lgerror = Convert.ToString(OraCommand.Parameters["lgerror"].Value);
 
-                    while (ora_DataReader.Read())
+                   if (kiekis == "0")
                     {
-                      
-
-                        string CODEMP = ora_DataReader["existe"].ToString();
-                    
+                        ok = false;
                     }
+
 
 
                 }
@@ -420,8 +421,46 @@ namespace Api
             return ok;
 
         }
+        public bool MenuPerfilUsuario( int codEmpleado,  string usu, string pass)
+        {
+            bool ok = true;
+            try
+            {
+                // Si no esta conectado, se conecta.
+                if (!IsConected())
+                {
+                    crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+                    ok = Conectar();
+                }
+                if (ok)
+                {
+                    if ((ora_DataReader != null))
+                    {
+                        ora_DataReader.Close();
+                        ora_DataReader.Dispose();
+                    }
+                    OracleCommand OraCommand = new OracleCommand();
+                    OraCommand.Connection = ora_Connection;
+                    OraCommand.CommandText = "PROCK_PERSONAL_WEB.QRY_MenuPerfilUsuario";
+                    OraCommand.CommandType = CommandType.StoredProcedure;
+                    OraCommand.Parameters.Add("Pv_CodUsuario", usu);
+                    OraCommand.Parameters.Add("Pv_CodEmpleado", codEmpleado);
+                    OraCommand.Parameters.Add("menuUsuario", OracleDbType.RefCursor);
+                    OraCommand.Parameters["menuUsuario"].Direction = ParameterDirection.Output;
+                    // OraCommand.ExecuteNonQuery();
+                    ora_DataReader = OraCommand.ExecuteReader();
+                    //      var kiekis = Convert.ToString(OraCommand.Parameters["LISTA"].Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                AsignarError(ref ex);
+                ok = false;
+            }
 
+            return ok;
 
+        }
 
 
         /// <summary>
