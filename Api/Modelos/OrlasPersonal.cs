@@ -7,6 +7,7 @@
         public string? CEDULA { get; set; }
         public string? NUMCEDULA { get; set; }
         public string? CED { get; set; }
+        public string? FECNAC { get; set; }
         public string? NOMCRG { get; set; }
         public string? GRUPO_COSTO { get; set; }
         public string? EDAD { get; set; }
