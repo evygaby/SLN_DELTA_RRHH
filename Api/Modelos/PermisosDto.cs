@@ -63,11 +63,14 @@ namespace Api.Modelos
     public class Child
 
     {
-        //public Int64 id { get; set; }
-        public string? name { get; set; }
-        public string? url { get; set; }
-        //public bool? selected { get; set; }
-        public List<Child>? children { get; set; }
+        public string? label { get; set; }
+        public bool? isTitle { get; set; }
+        public string? id { get; set; }
+        public string? parentId { get; set; }
+        public string? link { get; set; }
+        public string? icon { get; set; }
+        public bool? isLayout { get; set; }
+        public iconComponent? badge { get; set; }
 
     }
     public class iconComponent
@@ -81,12 +84,14 @@ namespace Api.Modelos
     public class MenuDto
     {
 
-        public string? name { get; set; }
-        public bool? title { get; set; }
-
-
-        public string? url { get; set; }
-        public iconComponent? iconComponent { get; set; }
-        public List<Child>? children { get; set; }
+        public string? label { get; set; }
+        public bool? isTitle { get; set; }
+        public string? id { get; set; }
+        public string? parentId { get; set; }
+        public string? link { get; set; }
+        public string? icon { get; set; }
+        public bool? isLayout { get; set; }
+        public iconComponent? badge { get; set; }
+        public List<Child>? subItems { get; set; }
     }
 }

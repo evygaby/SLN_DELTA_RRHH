@@ -296,38 +296,56 @@ namespace Api
                                              join l2 in personList on l1.ID_MENU equals l2.ID_MENU_NIVEL
                                              where l2.CONTADOR > 0
                                              select l1).Distinct().ToList();
+
+
+                    MenuDto datoAd = new MenuDto();
+                    datoAd.id = "1";
+                    datoAd.label = "MENUITEMS.MENU.TEXT";
+                    datoAd.isTitle = true;
+                    ListaMenu.Add(datoAd);
                     foreach (Menu padre in tempR1)
                     {
                         MenuDto dato = new MenuDto();
-                        dato.title = true;
-                        dato.name=padre.DESCRIPCION;
-                        dato.url = "";
-                        dato.iconComponent = new iconComponent();
-                        dato.iconComponent.name = padre.URL_IMAGEN;
+                        dato.id = padre.ID_MENU;
+                        dato.label=padre.DESCRIPCION;
+                        //dato.link = padre.WFRM;
+                        //dato.isTitle = dato.link=="#";
+                        //dato.isLayout = dato.link!="#";
+                        //dato.badge = new iconComponent();
+                        //dato.badge.name = padre.URL_IMAGEN;
+                        dato.icon = padre.URL_IMAGEN;
+                        dato.parentId = padre.ID_MENU_NIVEL;
                         //Agrego Nivel 2
                         List<Menu> tempR2 = (from l1 in personList
                                              join l2 in personList on l1.ID_MENU equals l2.ID_MENU_NIVEL
-                                             where l2.CONTADOR > 0 & l2.ID_MENU == padre.ID_MENU_NIVEL
+                                             where l2.CONTADOR > 0 & l2.ID_MENU_NIVEL== padre.ID_MENU
                                              select l2).Distinct().ToList();
                         List<Child> lista = new List<Child>();
                         foreach (Menu hijo in tempR2)
                         {
                             Child dato2 = new Child();
-                            dato2.name = hijo.DESCRIPCION;
-                            dato2.url = hijo.WFRM;
+                            dato2.id = hijo.ID_MENU;
+                            dato2.label = hijo.DESCRIPCION;
+                            dato2.link = hijo.WFRM;
+                            //dato2.isTitle = dato.link == "";
+                            //dato2.isLayout = dato.link != "";
+                            //dato2.badge = new iconComponent();
+                            //dato2.badge.name = hijo.URL_IMAGEN;
+                            dato2.icon = hijo.URL_IMAGEN;
+                            dato2.parentId = hijo.ID_MENU_NIVEL;
                             lista.Add(dato2);
                         }
-                        dato.children= lista;
+                        dato.subItems= lista;
                         ListaMenu.Add(dato);
                     }
-                        
-                        //List<Menu> tempR3 = (from l1 in personList
-                        //                     where l1.CONTADOR > 0 & l1.NIVEL_MENU == 1
-                        //                     select l1).Distinct().ToList();
-                        //List<Menu> tempR4 = (from l1 in personList
-                        //                     join l2 in tempR1 on l1.ID_MENU equals l2.ID_MENU_NIVEL
-                        //                     select l1).Distinct().ToList();
                     
+                    //List<Menu> tempR3 = (from l1 in personList
+                    //                     where l1.CONTADOR > 0 & l1.NIVEL_MENU == 1
+                    //                     select l1).Distinct().ToList();
+                    //List<Menu> tempR4 = (from l1 in personList
+                    //                     join l2 in tempR1 on l1.ID_MENU equals l2.ID_MENU_NIVEL
+                    //                     select l1).Distinct().ToList();
+
 
                 }
 
@@ -355,6 +373,33 @@ namespace Api
             try
             {
                 if (DB.Ejecuta("rh_mantenimientos.consultasimple", sql2, usu, pass))
+                {
+
+                    personList = DataReaderMapToList<T>(DB.ora_DataReader);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                DB.Dispose();
+            }
+            return personList;
+
+        }
+        public virtual List<T> CallProceduresConsula<T>(T objeto, string sentencia, string usu, string pass)
+        {
+            List<T> personList = new List<T>();
+            DBOracle DB = new DBOracle();
+            T obj = default(T);
+            obj = Activator.CreateInstance<T>();
+            obj = objeto;
+            DB.crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+            string sql2 = sentencia;
+            try
+            {
+                if (DB.Ejecuta("rh_mantenimientos.callprocedimiento", sql2, usu, pass))
                 {
 
                     personList = DataReaderMapToList<T>(DB.ora_DataReader);
