@@ -29,5 +29,19 @@ namespace Api
         Task<List<Login>> QRY_Login(string usuario, string pass, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         List<MenuDto> MenuPerfilUsuario(int codemp,string usuario, string pass, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         List<T> CallProceduresConsula<T>(T objeto, string sentencia, string usu, string pass);
+        public string SeccionesSeleccionadas(List<string> secciones)
+        {
+            string codigos = "";
+
+            foreach (var item in secciones)
+            {
+                int niveldesde = int.Parse(item.Split("*")[0]);
+                int nivelhasta = int.Parse(item.Split("*")[1]);
+                for (var dn = niveldesde; dn <= nivelhasta; dn++)
+                    codigos = codigos + dn.ToString() + ",";
+            }
+            
+            return codigos;
+        }
     }
 }

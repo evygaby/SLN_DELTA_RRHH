@@ -399,7 +399,7 @@ namespace Api
             string sql2 = sentencia;
             try
             {
-                if (DB.Ejecuta("rh_mantenimientos.callprocedimiento", sql2, usu, pass))
+                if (DB.Ejecuta("ACADEMICO1.PROC_K_ACADEMICO_WEB.callprocedimiento", sql2, usu, pass))
                 {
 
                     personList = DataReaderMapToList<T>(DB.ora_DataReader);
