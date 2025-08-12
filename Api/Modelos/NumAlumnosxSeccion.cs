@@ -9,5 +9,6 @@
         public decimal? NUMTOTALNINOS { get; set; }
         public decimal? NUMTOTAL { get; set; }
         public decimal? NUMVISITANTES { get; set; }
+        public decimal? NIV_CODNIVEL { get; set; }
     }
 }

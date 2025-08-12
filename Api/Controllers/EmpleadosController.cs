@@ -274,7 +274,7 @@ return BadRequest(new { message = ex.Message });
             try
             {
                 Empresa paises = new Empresa();
-            return Ok(_contextp.Consultar<Empresa>(paises, usu, contrasena));
+            return Ok(_contextp.ConsultarNombreTabla<Empresa>("SGM_INSTITUCION", usu, contrasena));
 }catch(Exception ex)
             {
                 _logger.LogError(ex.Message);

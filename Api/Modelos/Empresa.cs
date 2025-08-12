@@ -2,8 +2,8 @@
 {
     public class Empresa
     {
-        public Decimal  ID_EMPRESA { get; set; }
-        public string? CODIGO { get; set; }
-        public string? RAZONSOCIAL { get; set; }
+        public Int16 NUM_INSTITU { get; set; }
+        public string? ID_INSTITUCION { get; set; }
+        public string? RAZON_SOCIAL { get; set; }
     }
 }

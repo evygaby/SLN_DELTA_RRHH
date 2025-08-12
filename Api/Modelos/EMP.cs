@@ -133,7 +133,7 @@ namespace Api.Modelos
         public string? NACIONALIDAD { get; set; }
         public decimal? ANTIGUEDAD { get; set; }
         
-        public string? PERTENECE_OBRA { get; set; }
+        //public string? PERTENECE_OBRA { get; set; }
         
         [NotMapped]
         public List<rh_familiar_discapacidad>? FamiliarDiscapicidad { get; set; }

@@ -1,6 +1,8 @@
 ﻿
+using Newtonsoft.Json.Converters;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
+using System.Text;
 using System.Xml.Linq;
 
 namespace Api
@@ -171,10 +173,10 @@ namespace Api
             }
         }
 
-        public string crearcadena ( string datasource, string usuario, string pass)
+        public string crearcadena(string datasource, string usuario, string pass)
         {
             string cadena = null;
-            cadena = "DATA SOURCE="+datasource +";PASSWORD="+ pass + ";PERSIST SECURITY INFO=True;USER ID="+usuario+";pooling=false;";
+            cadena = "DATA SOURCE=" + datasource + ";PASSWORD=" + pass + ";PERSIST SECURITY INFO=True;USER ID=" + usuario + ";pooling=false;";
             info.CadenaConexion = cadena;
             return cadena;
         }
@@ -214,7 +216,7 @@ namespace Api
             return ok;
 
         }
-        public bool EjecutaSPR(string SpName, string? tabla,string usu, string pass)
+        public bool EjecutaSPR(string SpName, string? tabla, string usu, string pass)
         {
             bool ok = true;
             try
@@ -235,13 +237,13 @@ namespace Api
                     OracleCommand OraCommand = new OracleCommand();
                     OraCommand.Connection = ora_Connection;
                     OraCommand.CommandText = SpName;
-                    OraCommand.CommandType = CommandType.StoredProcedure;     
-                    OraCommand.Parameters.Add("nom_tabla", tabla);         
+                    OraCommand.CommandType = CommandType.StoredProcedure;
+                    OraCommand.Parameters.Add("nom_tabla", tabla);
                     OraCommand.Parameters.Add("LISTA", OracleDbType.RefCursor);
                     OraCommand.Parameters["LISTA"].Direction = ParameterDirection.Output;
-                   // OraCommand.ExecuteNonQuery();
+                    // OraCommand.ExecuteNonQuery();
                     ora_DataReader = OraCommand.ExecuteReader();
-              //      var kiekis = Convert.ToString(OraCommand.Parameters["LISTA"].Value);
+                    //      var kiekis = Convert.ToString(OraCommand.Parameters["LISTA"].Value);
                 }
             }
             catch (Exception ex)
@@ -390,9 +392,9 @@ namespace Api
                     OraCommand.Connection = ora_Connection;
                     OraCommand.CommandText = SpName;
                     OraCommand.CommandType = CommandType.StoredProcedure;
-                    OraCommand.Parameters.Add("pv_usuario", usu);
+                    OraCommand.Parameters.Add("pv_usuario", usu.ToUpper());
                     OraCommand.Parameters.Add("pv_pass", pass);
-             
+
                     OraCommand.Parameters.Add("existe", OracleDbType.Int32);
                     //OraCommand.Parameters["existe"].Size = 100;
                     OraCommand.Parameters["existe"].Direction = ParameterDirection.Output;
@@ -400,12 +402,14 @@ namespace Api
                     OraCommand.Parameters["lgerror"].Size = 100;
                     OraCommand.Parameters["lgerror"].Direction = ParameterDirection.Output;
                     ora_DataReader = OraCommand.ExecuteReader();
-                   var kiekis = Convert.ToString(OraCommand.Parameters["existe"].Value);
+                    var kiekis = Convert.ToString(OraCommand.Parameters["existe"].Value);
                     var lgerror = Convert.ToString(OraCommand.Parameters["lgerror"].Value);
 
-                   if (kiekis == "0")
+                    if (kiekis == "0")
                     {
+
                         ok = false;
+                        throw new Exception(lgerror);
                     }
 
 
@@ -421,7 +425,7 @@ namespace Api
             return ok;
 
         }
-        public bool MenuPerfilUsuario( int codEmpleado,  string usu, string pass)
+        public bool MenuPerfilUsuario(int codEmpleado, string usu, string pass)
         {
             bool ok = true;
             try
@@ -441,7 +445,7 @@ namespace Api
                     }
                     OracleCommand OraCommand = new OracleCommand();
                     OraCommand.Connection = ora_Connection;
-                    OraCommand.CommandText = "PROCK_PERSONAL_WEB.QRY_MenuPerfilUsuario";
+                    OraCommand.CommandText = "rh_mantenimientos.QRY_MenuPerfilUsuario";
                     OraCommand.CommandType = CommandType.StoredProcedure;
                     OraCommand.Parameters.Add("Pv_CodUsuario", usu);
                     OraCommand.Parameters.Add("Pv_CodEmpleado", codEmpleado);
@@ -468,7 +472,7 @@ namespace Api
         /// </summary>
         /// <param name="SqlQuery">sentencia sql a ejecutar</param>
         /// <returns></returns> 
-        public bool EjecutaSQL(string SqlQuery,string usu,string pass)
+        public bool EjecutaSQL(string SqlQuery, string usu, string pass)
         {
 
             bool ok = true;
@@ -534,7 +538,7 @@ namespace Api
                 // Si no esta conectado, se conecta.
                 if (!IsConected())
                 {
-                   
+
                     ok = Conectar();
                 }
 

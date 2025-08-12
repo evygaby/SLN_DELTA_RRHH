@@ -16,6 +16,7 @@ namespace Api
 
         List<SEGUROS> Consultarseguro(int idempresa, string usu, string pass);
         List<T> Consultar<T>(T objeto, string usu, string pass);
+        List<T> ConsultarNombreTabla<T>(string Tabla, string usu, string pass);
         List<T> consultarXId<T>(T objeto, string usu,string pass,int idempresa);
         List<T> consultarEMP<T>(T objeto, string usu, string pass, int idempresa);
         List<T> consultaRAW<T>(T objeto, string sentencia, string usu, string pass);
@@ -29,6 +30,9 @@ namespace Api
         Task<List<Login>> QRY_Login(string usuario, string pass, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         List<MenuDto> MenuPerfilUsuario(int codemp,string usuario, string pass, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         List<T> CallProceduresConsula<T>(T objeto, string sentencia, string usu, string pass);
+        DataTable CallProceduresConsulaDT(string sentencia, string usu, string pass);
+
+        Task<DataSet> ConsultarActa(string usuario, string pass, string periodo, int codigo);
         public string SeccionesSeleccionadas(List<string> secciones)
         {
             string codigos = "";
@@ -43,5 +47,18 @@ namespace Api
             
             return codigos;
         }
+        private const string directorioGuardaAdjuntos_P = "https://administrativo.uedelta.k12.ec/DeltaArchivos/FileActas/ActasRG/";
+        private const string ProductTagFormat = "<a class='Adjunto' href='{1}' target='_blank' >{0}</a><br/>";
+        public string ConvertirURL(string texto,int codigo)
+        {
+            if (texto != "")
+            {
+                var productNames = texto.Split(",");
+                return string.Join(string.Empty, productNames.Select(p => string.Format(ProductTagFormat, p, directorioGuardaAdjuntos_P + "actaRG-COD" + codigo + "/" + p)));
+            }
+            else
+                return "";
+        }
     }
+
 }
