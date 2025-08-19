@@ -183,7 +183,41 @@ namespace Api.Controllers
                          .Cast<DataColumn>()
                          .ToDictionary(col => col.ColumnName, col => row[col]))
                      .ToList();
-            return Json(lista); ;
+            return Json(lista); 
+        }
+        [HttpGet]
+        [Route("api/checklist")]
+        public async Task<IActionResult> ListadoPEGsxSeccion(string usu, string pass, string periodo, [FromQuery] List<string> niveles)
+
+        {
+            NumAlumnosxSeccion Lista = new NumAlumnosxSeccion();
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "PROC_K_RRHH_WEB.QRY_PegPrecepxSeccion('" + periodo + "','" + _contextp.SeccionesSeleccionadas(niveles) + "',:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+        [HttpGet]
+        [Route("api/checklist")]
+        public async Task<IActionResult> ListadoPreceptorasxSeccion(string usu, string pass, string periodo, [FromQuery] List<string> niveles)
+
+        {
+            NumAlumnosxSeccion Lista = new NumAlumnosxSeccion();
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "PROC_K_RRHH_WEB.QRY_PreceptorasxSeccion('" + periodo + "','" + _contextp.SeccionesSeleccionadas(niveles) + "',:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
         }
     }
 }
