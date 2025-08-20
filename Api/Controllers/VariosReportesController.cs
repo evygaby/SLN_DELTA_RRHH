@@ -1,4 +1,5 @@
 ﻿using Api.Modelos;
+using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
@@ -15,12 +16,12 @@ namespace Api.Controllers
     public class VariosReportesController : Controller
     {
         private readonly IDeltaContextProcedures _contextp;
-
-        public VariosReportesController(IDeltaContextProcedures deltaContextProcedures)
+        private readonly IReportesService _reportesService;
+        public VariosReportesController(IDeltaContextProcedures deltaContextProcedures, IReportesService reportesService)
         {
 
             _contextp = deltaContextProcedures;
-
+            _reportesService = reportesService;
         }
 
         [HttpGet]
@@ -188,13 +189,8 @@ namespace Api.Controllers
         [HttpGet]
         [Route("api/checklist")]
         public async Task<IActionResult> ListadoPEGsxSeccion(string usu, string pass, string periodo, [FromQuery] List<string> niveles)
-
         {
-            NumAlumnosxSeccion Lista = new NumAlumnosxSeccion();
-            var contextoOracle = new ModelOracleContext();
-            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
-            var sentencia = "PROC_K_RRHH_WEB.QRY_PegPrecepxSeccion('" + periodo + "','" + _contextp.SeccionesSeleccionadas(niveles) + "',:1)";
-            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            DataTable dt = await _reportesService.ListadoPEGsxSeccion(usu, pass, periodo, niveles);
             var lista = dt.AsEnumerable()
                      .Select(row => dt.Columns
                          .Cast<DataColumn>()
@@ -207,11 +203,7 @@ namespace Api.Controllers
         public async Task<IActionResult> ListadoPreceptorasxSeccion(string usu, string pass, string periodo, [FromQuery] List<string> niveles)
 
         {
-            NumAlumnosxSeccion Lista = new NumAlumnosxSeccion();
-            var contextoOracle = new ModelOracleContext();
-            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
-            var sentencia = "PROC_K_RRHH_WEB.QRY_PreceptorasxSeccion('" + periodo + "','" + _contextp.SeccionesSeleccionadas(niveles) + "',:1)";
-            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            DataTable dt = await _reportesService.ListadoPreceptorasxSeccion(usu, pass, periodo, niveles);
             var lista = dt.AsEnumerable()
                      .Select(row => dt.Columns
                          .Cast<DataColumn>()

@@ -1,7 +1,9 @@
 using Api;
+using Api.Services.Implementations;
+using Api.Services.Interfaces;
+using Infra.Logging;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
-using Infra.Logging;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +19,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddCustomLogging("C:\\Logs\\Dinamico");
 builder.Services.AddDbContext<ModelOracleContext>(options => options.UseOracle(connectioinOracle));
 builder.Services.AddScoped<IDeltaContextProcedures, DeltaContextProcedures>();
+builder.Services.AddScoped<IReportesService, ReportesService>();
 builder.Services.AddControllers();
 builder.Services
     .AddControllers()
