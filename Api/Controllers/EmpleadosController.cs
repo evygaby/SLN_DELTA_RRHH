@@ -340,6 +340,8 @@ return BadRequest(new { message = ex.Message });
                 _logger.LogInformation("guardando");
                 var ID = _contextp.ConsultarUltimoCODEMP(value, usu, contrasena);
                 value.CODEMP = ID + 1;
+                value.CODPERSONA = "E" + value.CODEMP;
+                value.FECHA_DIGITACION = DateTime.Now;
                 var resuy = await _contextp.Guardar(value, usu, contrasena);
                 string mensaje = "";
                 if (validar(resuy, ref mensaje) == false)
@@ -529,7 +531,8 @@ return BadRequest(new { message = ex.Message });
                 item.ID_HIJO = sec;
                 item.CODEMP = (short?)value.CODEMP;
                 item.ID_EMPRESA = (short?)value.ID_EMPRESA;
-                resuy = await _contextp.Guardar(item, usu, contrasena);
+                item.FECHA_MODIFICA = DateTime.Now;
+                    resuy = await _contextp.Guardar(item, usu, contrasena);
                     mensaje = "";
                     if (validar(res1, ref mensaje) == false)
                     {
