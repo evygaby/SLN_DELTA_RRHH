@@ -1,6 +1,7 @@
 ﻿using Api.Modelos;
 using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -177,14 +178,14 @@ namespace Api.Controllers
         {
             var contextoOracle = new ModelOracleContext();
             DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
-            var sentencia = "PROC_K_RRHH_WEB.QRY_JefesArea("+ empresa +",:1)";
+            var sentencia = "PROC_K_RRHH_WEB.QRY_JefesArea(" + empresa + ",:1)";
             DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
             var lista = dt.AsEnumerable()
                      .Select(row => dt.Columns
                          .Cast<DataColumn>()
                          .ToDictionary(col => col.ColumnName, col => row[col]))
                      .ToList();
-            return Json(lista); 
+            return Json(lista);
         }
         [HttpGet]
         [Route("api/checklist")]
@@ -204,6 +205,99 @@ namespace Api.Controllers
 
         {
             DataTable dt = await _reportesService.ListadoPreceptorasxSeccion(usu, pass, periodo, niveles);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ComparativoRoles(string usu, string pass, Int32 empresa, DateTime? desde, DateTime? hasta)
+        {
+            var fdesde = desde.HasValue ? "'" + desde.Value.ToString("dd/MM/yyyy") + "'" : "null";
+            var fhasta = hasta.HasValue ? "'" + hasta.Value.ToString("dd/MM/yyyy") + "'" : "null";
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "DEVELOPER1.prock_personal_web.arcComparaExcel(" + empresa + "," + fdesde + "," + fhasta + ",:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ListaActualizaDatos(string usu, string pass, Int32 empresa)
+        {
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "DEVELOPER1.prock_personal_web.QRY_LISTAACTUALIZADATOS(" + empresa + ",:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            dt.Columns.Add("CODIGO");
+            dt.Columns.Add("URL");
+            foreach (DataRow i in dt.Rows)
+            {
+                i["CODIGO"] = _reportesService.Encrypt(i["CODEMP"] + "|" + i["ID_EMPRESA"],"d3lt@_act_emp_2024");
+                i["URL"] = "https://actualizaciondatos.uedelta.k12.ec/wfrmfichasocial.aspx?a=" + i["CODIGO"];
+            }
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ListaTitulos(string usu, string pass, Int32 empresa)
+        {
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "DEVELOPER1.PROC_K_RRHH_WEB.QRY_LISTA_TITULOS(" + empresa + ",:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ListaEncargos(string usu, string pass, Int32 empresa)
+        {
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "DEVELOPER1.PROC_K_RRHH_WEB.RPT_LISTA_ENCARGOS(" + empresa + ",:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+        [HttpGet]
+        [Route("api/checklist")]
+        public async Task<IActionResult> DistributivoMaestras(string usu, string pass,string periodo,  [FromQuery] List<string> niveles)
+        {
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "PROC_K_REPORTES_ACADWEB.QRYDistribxMaestra('" + periodo + "','" + _contextp.SeccionesSeleccionadas(niveles) + "',NULL,:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            dt.Columns.Add("HORASCLASE_NUM", typeof(int));
+            foreach (DataRow i in dt.Rows)
+            {
+                if (!Information.IsDBNull(i["PROF"]))
+                {
+                    object result = dt.Compute("Sum(NUMHORAS)", $"PROF = '{i["PROF"]}'");
+                    int sum = result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                    i["HORASCLASE_NUM"] = sum;
+                    i["CARGOS"] = i["CARGOS"] == DBNull.Value? "": i["CARGOS"].ToString().Replace(",", "<br/>");
+                }
+            }
+
+
             var lista = dt.AsEnumerable()
                      .Select(row => dt.Columns
                          .Cast<DataColumn>()
