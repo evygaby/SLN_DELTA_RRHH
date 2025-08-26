@@ -879,38 +879,12 @@ namespace Api
 
                         for (int i = 3; i < command.Parameters.Count; i++) // Los REF CURSOR empiezan en el índice 3
                         {
-                            //if (i != 5)
-                            //{
                                 var refCursor = (OracleRefCursor)command.Parameters[i].Value;
                                 using var reader = refCursor.GetDataReader();
                                 var dt = new DataTable();
                                 dt.Load(reader);
                                 ds.Tables.Add(dt);
-                            //}
-                            //else
-                            //{
-                            //    var refCursor = (OracleRefCursor)command.Parameters[i].Value;
-                            //    using var reader = refCursor.GetDataReader();
-                            //    var dt = new DataTable();
-                            //    for (int j = 0; j < reader.FieldCount; j++)
-                            //    {
-                            //        dt.Columns.Add(reader.GetName(j), typeof(string)); // para simplificar, usa string para todo
-                            //    }
-
-                            //    while (reader.Read())
-                            //    {
-                            //        var dr = dt.NewRow();
-                            //        dr["SEC_DETRG"] = reader.GetInt32(0);
-                            //        dr["ORDENDIA"] = !reader.IsDBNull(1) ? (reader.GetValue(1) is OracleClob clob1 ? clob1.Value : reader.GetString(1)) : null;
-                            //        dr["DESARROLLO"] = !reader.IsDBNull(2) ? reader.GetString(2) : null;
-                            //        dr["ACUERDOS"] = !reader.IsDBNull(3) ? reader.GetString(3) : null;
-                            //        dr["SEC_CABRG"] = reader.GetInt32(4);
-                            //        dt.Rows.Add(dr);
-                            //      }
-
-
-                            //    ds.Tables.Add(dt);
-                            //}
+                           
                         }
                     }
                 }

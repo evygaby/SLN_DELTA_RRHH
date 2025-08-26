@@ -1,11 +1,18 @@
 ﻿using Api.Services.Interfaces;
+using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Api.Services.Implementations
 {
     public class ReportesService : IReportesService
     {
         private readonly ModelOracleContext _contextp;
+        private static TripleDESCryptoServiceProvider DES = new TripleDESCryptoServiceProvider();
+        private static MD5CryptoServiceProvider MD5 = new MD5CryptoServiceProvider();
 
         public ReportesService(ModelOracleContext contextp)
         {
@@ -34,14 +41,6 @@ namespace Api.Services.Implementations
 
             // Ejecutar procedimiento y obtener DataTable
             DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
-
-            // Convertir a lista de diccionarios
-            //var lista = dt.AsEnumerable()
-            //             .Select(row => dt.Columns
-            //                 .Cast<DataColumn>()
-            //                 .ToDictionary(col => col.ColumnName, col => row[col]))
-            //             .ToList();
-
             return Task.FromResult(dt); ;
         }
 
@@ -54,15 +53,79 @@ namespace Api.Services.Implementations
 
             // Ejecutar procedimiento y obtener DataTable
             DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
-
-            // Convertir a lista de diccionarios
-            //var lista = dt.AsEnumerable()
-            //             .Select(row => dt.Columns
-            //                 .Cast<DataColumn>()
-            //                 .ToDictionary(col => col.ColumnName, col => row[col]))
-            //             .ToList();
-
             return Task.FromResult(dt);
+        }
+        public async Task<DataSet> ActualizaDatosEmpleado(string usuario, string pass, int codigo)
+        {
+            var ds = new DataSet();
+            try
+            {
+                using (var connection = new OracleConnection(new DBOracle().crearcadena(ClsConfig.DATA_SOURCE, usuario, pass)))
+                {
+                    connection.FetchSize = 10 * 1024 * 1024; // 10 MB
+                    await connection.OpenAsync();
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = "PROC_K_ACTUALIZA_DATOS.RPT_FICHASOCIAL";
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.Add("PN_CODEMP", OracleDbType.Varchar2, 50).Value = codigo;
+                        command.Parameters.Add("lista", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                        command.Parameters.Add("titu", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                        command.Parameters.Add("estruc", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                        command.Parameters.Add("disc", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                        command.Parameters.Add("enfermedad", OracleDbType.RefCursor).Direction = ParameterDirection.Output;
+                        command.InitialLOBFetchSize = 10 * 1024 * 1024; // 10 MB
+                        OracleDataAdapter da = new OracleDataAdapter();
+                        da.SelectCommand = command;
+                        da.Fill(ds);
+                        ds.Tables[0].Columns.Add("TIPO_VI");
+                        ds.Tables[0].Columns.Add("URB");
+                        ds.Tables[0].Columns.Add("MZ");
+                        ds.Tables[0].Columns.Add("CALLE_PRIN");
+                        ds.Tables[0].Columns.Add("NO_CASA");
+                        ds.Tables[0].Columns.Add("CALLE_SEC");
+                        ds.Tables[0].Columns.Add("COND");
+                        ds.Tables[0].Columns.Add("NO_DEPA");
+                        ds.Tables[0].Columns.Add("KM");
+                        ds.Tables[0].Columns.Add("VIA");
+                        foreach (DataRow i in ds.Tables[0].Rows)
+                        {
+                            string[] c = i["DIRECCION_CSV"].ToString()
+                               .Split(new string[] { "," }, StringSplitOptions.None);
+                            i["URB"] = c[0];
+                            i["MZ"] = c[1];
+                            i["CALLE_PRIN"] = c[2];
+                            i["NO_CASA"] = c[3];
+                            i["CALLE_SEC"] = c[4];
+                            i["COND"] = c[5];
+                            i["NO_DEPA"] = c[6];
+                            i["KM"] = c[7];
+                            i["VIA"] = c[8];
+                            if (c.Length == 10)
+                                i["TIPO_VI"] = c[9];
+                        }
+
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                ds = null;
+                throw;
+            }
+            return ds;
+        }
+        private static byte[] MD5Hash(string value)
+        {
+            return MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(value));
+        }
+        public string Encrypt(string dataToEncrypt, string password)
+        {
+            DES.Key = MD5Hash(password);
+            DES.Mode = CipherMode.ECB;
+            byte[] Buffer = ASCIIEncoding.ASCII.GetBytes(dataToEncrypt);
+            return Convert.ToBase64String(DES.CreateEncryptor().TransformFinalBlock(Buffer, 0, Buffer.Length));
         }
     }
 }
