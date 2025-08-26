@@ -341,7 +341,9 @@ return BadRequest(new { message = ex.Message });
                 var ID = _contextp.ConsultarUltimoCODEMP(value, usu, contrasena);
                 value.CODEMP = ID + 1;
                 value.CODPERSONA = "E" + value.CODEMP;
+                value.FECHAACTUALIZA = DateTime.Now;
                 value.FECHA_DIGITACION = DateTime.Now;
+                value.NOMBRES = value.PRIMER_NOMBRE + " " + value.SEGUNDO_NOMBRE;
                 var resuy = await _contextp.Guardar(value, usu, contrasena);
                 string mensaje = "";
                 if (validar(resuy, ref mensaje) == false)
@@ -510,7 +512,9 @@ return BadRequest(new { message = ex.Message });
             var res6 = new Dictionary<bool, string>();
             var cargos = new Dictionary<bool, string>();
             var titulos = new Dictionary<bool, string>();
-            var resuy = await _contextp.Update(value, "CODEMP", value.CODEMP.ToString(), usu, contrasena);
+            value.FECHAACTUALIZA = DateTime.Now;
+                value.NOMBRES = value.PRIMER_NOMBRE + " " + value.SEGUNDO_NOMBRE; 
+                var resuy = await _contextp.Update(value, "CODEMP", value.CODEMP.ToString(), usu, contrasena);
                 string mensaje = "";
                 if (validar(resuy, ref mensaje) == false)
                 {
@@ -531,7 +535,7 @@ return BadRequest(new { message = ex.Message });
                 item.ID_HIJO = sec;
                 item.CODEMP = (short?)value.CODEMP;
                 item.ID_EMPRESA = (short?)value.ID_EMPRESA;
-                item.FECHA_MODIFICA = DateTime.Now;
+             
                     resuy = await _contextp.Guardar(item, usu, contrasena);
                     mensaje = "";
                     if (validar(res1, ref mensaje) == false)
