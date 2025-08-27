@@ -177,7 +177,7 @@ namespace Api.Controllers
 
         {
             try
-            {
+            {  
                 BANCOS paises = new BANCOS();
             return Ok(_contextp.Consultar<BANCOS>(paises, usu, contrasena));
         }catch(Exception ex)
@@ -241,20 +241,6 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CANTONES(string usu, string contrasena)
-        {
-            try
-            {
-                CANTONES paises = new CANTONES();
-            return Ok(_contextp.Consultar<CANTONES>(paises, usu, contrasena));
-        }catch(Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(new {message=ex.Message
-    });
-            }
-        }
         [HttpGet]
         public async Task<IActionResult> CUIDADES(string usu, string contrasena)
         {
