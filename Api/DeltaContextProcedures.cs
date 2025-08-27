@@ -86,14 +86,14 @@ namespace Api
                             }
                             else
                             {
-                                querydataSection.Append(quote + valu + quote + ",");
+                                querydataSection.Append(quote + valu.ToString().ToUpper() + quote + ",");
                             }
 
                         }
                         else
                         {
                             query.Append(prop.Name + ",");
-                            querydataSection.Append(valu + ",");
+                            querydataSection.Append(valu.ToString().ToUpper() + ",");
                         }
                     }
                 }
@@ -687,13 +687,13 @@ namespace Api
                             }
                             else
                             {
-                                query.Append(quote + valu + quote + ",");
+                                query.Append(quote + valu.ToString().ToUpper() + quote + ",");
                             }
 
                         }
                         else
                         {
-                            query.Append(valu + ",");
+                            query.Append( valu.ToString().ToUpper() + ",");
 
                         }
                     }
