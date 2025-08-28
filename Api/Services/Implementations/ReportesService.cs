@@ -116,6 +116,31 @@ namespace Api.Services.Implementations
             }
             return ds;
         }
+        public Task<DataTable> Prestamos(string usu, string pass, string empresa, string? saldo,DateTime? desde,DateTime? hasta)
+        {
+            DeltaContextProcedures obj = new DeltaContextProcedures(_contextp);
+            var fdesde = desde.HasValue ? "'" + desde.Value.ToString("dd/MM/yyyy") + "'" : "null";
+            var fhasta = hasta.HasValue ? "'" + hasta.Value.ToString("dd/MM/yyyy") + "'" : "null";
+
+
+
+            // Construir la sentencia PL/SQL
+            var sentencia = $"select e.razonsocial,p.codprestamo,P.TIPO,P.OBSERVACION,P.FECHAINI,P.NUMCUOTAS," +
+                "P.VALOR_CUOTA,P.FECHAFIN,P.SALDO from developer1.emp e inner join developer1.prestamos p on "+
+                "P.CODEMP=E.CODEMP and p.estado=1 where e.activo='S' AND E.ID_EMPRESA=" + empresa + " ";
+            if (saldo != "")
+            {
+                sentencia += " AND p.saldo > " + saldo;
+            }
+            if (desde.HasValue)
+            {
+                sentencia += " and p.fechaini between " + fdesde + " and " + fhasta ;
+            }
+
+            // Ejecutar procedimiento y obtener DataTable
+            DataTable dt = obj.consultaSimple(sentencia, usu, pass);
+            return Task.FromResult(dt);
+        }
         private static byte[] MD5Hash(string value)
         {
             return MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(value));

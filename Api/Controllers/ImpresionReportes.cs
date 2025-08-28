@@ -1,4 +1,5 @@
-﻿using Api.Services.Interfaces;
+﻿using Api.Modelos;
+using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Reporting.NETCore;
@@ -88,6 +89,38 @@ namespace Api.Controllers
 
             // Devolver archivo PDF al navegador
             return File(pdf, "application/pdf", $"Actualizadatos_"+ codigo + DateTime.Now.ToString("ddMMyyyy") + ".pdf");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Prestamos(string usu, string pass, string empresa, string? saldo, DateTime? desde, DateTime? hasta)
+        {
+            // Ruta al archivo RDLC en la carpeta "Reportes"
+            string path = Path.Combine(_env.ContentRootPath, "Reportes", "rptPrestamos.rdlc");
+
+            if (!System.IO.File.Exists(path))
+                return NotFound($"No se encontró el archivo RDLC en {path}");
+
+            // Crear reporte
+            LocalReport report = new LocalReport();
+            report.LoadReportDefinition(System.IO.File.OpenRead(path));
+            //parametros
+            var reportParams = new List<ReportParameter>
+               {
+                new ReportParameter("desde", desde.HasValue ?  desde.Value.ToString("dd/MM/yyyy") : ""),
+                new ReportParameter("hasta",hasta.HasValue ?  hasta.Value.ToString("dd/MM/yyyy") : ""),
+                new ReportParameter("empresa", empresa),
+                new ReportParameter("saldo", saldo)
+                };
+            report.SetParameters(reportParams);
+            // Datos de ejemplo
+            System.Data.DataTable dt = await _reportesService.Prestamos(usu, pass, empresa,saldo,desde,hasta);
+            // Debe coincidir con el nombre del DataSet definido en el RDLC
+            report.DataSources.Add(new ReportDataSource("ds_prestamos", dt));
+
+            // Exportar a PDF
+            byte[] pdf = report.Render("PDF");
+
+            // Devolver archivo PDF al navegador
+            return File(pdf, "application/pdf", $"Prestamos_" + DateTime.Now.ToString("ddMMyyyy") + ".pdf");
         }
     }
 }

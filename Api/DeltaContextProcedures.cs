@@ -415,6 +415,30 @@ namespace Api
             return personList;
 
         }
+        public virtual DataTable consultaSimple(string sentencia, string usu, string pass)
+        {
+            DataTable dt = new DataTable();
+            DBOracle DB = new DBOracle();
+            DB.crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+            string sql2 = sentencia;
+            try
+            {
+                if (DB.Ejecuta("rh_mantenimientos.consultasimple", sql2, usu, pass))
+                {
+
+                    dt.Load(DB.ora_DataReader);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            finally
+            {
+                DB.Dispose();
+            }
+            return dt;
+
+        }
         public virtual List<T> CallProceduresConsula<T>(T objeto, string sentencia, string usu, string pass)
         {
             List<T> personList = new List<T>();

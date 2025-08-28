@@ -317,7 +317,7 @@ namespace Api
                     OraCommand.Connection = ora_Connection;
                     OraCommand.CommandText = SpName;
                     OraCommand.CommandType = CommandType.StoredProcedure;
-                    OraCommand.Parameters.Add("sentencia", sentencia);
+                    OraCommand.Parameters.Add("sentencia", OracleDbType.Clob).Value = sentencia;
                     OraCommand.Parameters.Add("LISTA", OracleDbType.RefCursor);
                     OraCommand.Parameters["LISTA"].Direction = ParameterDirection.Output;
 
