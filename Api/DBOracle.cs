@@ -523,8 +523,6 @@ namespace Api
             return ok;
 
         }
-
-
         public bool EjecutaSQL(string SqlQuery)
         {
 

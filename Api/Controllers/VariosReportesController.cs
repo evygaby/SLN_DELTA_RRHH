@@ -537,7 +537,32 @@ namespace Api.Controllers
 
             
         }
-        
+        [HttpGet]
+        public async Task<IActionResult> Prestamos(string usu, string pass, Int32 empresa,Int32? saldo,DateTime? desde, DateTime? hasta)
+        {
+            DataTable dt = await _reportesService.Prestamos(usu, pass ,empresa,saldo,desde,hasta);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+        [HttpGet]
+        public async Task<IActionResult>FechaProceso(string usu,string pass,Int32 empresa)
+        {
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "select to_char(f.valor, 'DD/MM/RRRR') fecha from fechas f where f.nombrefecha = 'HOY_RRHH' and f.id_empresa =" + empresa;
+            DataTable dt = obj.consultaSimple(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+
     }
 
 

@@ -75,13 +75,13 @@
                   <Width>0.44437cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.05563cm</Width>
+                  <Width>1.3308cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.80667cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>8.28667cm</Width>
+                  <Width>8.00837cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.865cm</Width>
@@ -795,7 +795,7 @@
             <DataSetName>ds_prestamos</DataSetName>
             <Top>0.07056cm</Top>
             <Height>1.54708cm</Height>
-            <Width>19.00313cm</Width>
+            <Width>19cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -806,7 +806,7 @@
         <Height>0.63687in</Height>
         <Style />
       </Body>
-      <Width>19.00313cm</Width>
+      <Width>19cm</Width>
       <Page>
         <PageHeader>
           <Height>1.89688cm</Height>
@@ -1431,6 +1431,7 @@ Cs//AAQi/ZE/4KtaYfFni6O6+Cf7TekaRHpfhf8AaL8B6Pp17q97ZWsJttL8P/FLwzctY2fxP8KWIZRY
 zw1o/jDwjrtk/L2OteHPEFlf6PqloTtLWl9YyIxUMVyOPjT4P/8ABLL/AIJw/AH4hW/xX+Df7EX7NPgD4kafqEOq6J400L4T+EV17wvqNvza6h4Ku7qwvT4LvFBZRdeExoUhBnZmAc5/QCigYUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/2Q==</ImageData>
     </EmbeddedImage>
   </EmbeddedImages>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>f2e63e0d-95b9-4781-9366-3a2812b4f32d</rd:ReportID>
 </Report>
