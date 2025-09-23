@@ -553,7 +553,7 @@ namespace Api.Controllers
         {
             var contextoOracle = new ModelOracleContext();
             DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
-            var sentencia = "select to_char(f.valor, 'DD/MM/RRRR') fecha from fechas f where f.nombrefecha = 'HOY_RRHH' and f.id_empresa =" + empresa;
+            var sentencia = "select f.valor fecha from fechas f where f.nombrefecha = 'HOY_RRHH' and f.id_empresa =" + empresa;
             DataTable dt = obj.consultaSimple(sentencia, usu, pass);
             var lista = dt.AsEnumerable()
                      .Select(row => dt.Columns

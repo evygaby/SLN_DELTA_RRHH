@@ -5,6 +5,8 @@ using Oracle.ManagedDataAccess.Client;
 
 namespace Api.Controllers
 {
+    [Route("/[controller]/[action]")]
+    [ApiController]
     public class CargasFamiliaresController : Controller
     {
         private readonly IDeltaContextProcedures _contextp;
@@ -21,7 +23,7 @@ namespace Api.Controllers
             return Ok(_contextp.CallProceduresConsula(Lista, "PROCK_PERSONAL_WEB.QRY_CARGAS_FAMILIARES(" + idempresa + "," +anio +  ",:1)", usu, pass));
         }
         [HttpPost("batch")]
-        public IActionResult Batch(string usu,string pass,[FromBody] List<BatchChange> changes)
+        public IActionResult Batch(string usu, string pass, [FromBody] List<BatchChange> changes)
         {
             bool ok = true;
             DBOracle DB = new DBOracle();

@@ -66,7 +66,9 @@ namespace Api.Controllers
                 Login empleado = new Login();
                if (login)
                 { 
-                    var usu= _contextp.consultaRAW<Login>(empleado, "SELECT E.RAZONSOCIAL,E.MAIL,E.CODEMP,E.ID_EMPRESA,u.usu_rrhh FROM EMP E inner join sgmusuari u on u.usu_codempl=e.codemp WHERE u.usu_usuario='" + username + "'", username, password).FirstOrDefault();
+                    var usu= _contextp.consultaRAW<Login>(empleado, "SELECT E.RAZONSOCIAL,E.MAIL,E.CODEMP,E.ID_EMPRESA,u.usu_rrhh,"+
+                        "(select f.valor from fechas f where f.nombrefecha = 'HOY_RRHH' and f.id_empresa = E.ID_EMPRESA) fecha_proceso"+
+                        " FROM EMP E inner join sgmusuari u on u.usu_codempl=e.codemp WHERE u.usu_usuario='" + username + "'", username, password).FirstOrDefault();
                     loginusuario.usuarioLogueado = usu;
                    loginusuario.Menu=  _contextp.MenuPerfilUsuario( usu.CODEMP, username, password);
                     return Ok(loginusuario);
