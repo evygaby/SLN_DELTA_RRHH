@@ -28,6 +28,11 @@ builder.Services
         // don't serialize with CamelCase (see https://github.com/aspnet/Announcements/issues/194)
         options.SerializerSettings.ContractResolver = new DefaultContractResolver();
     });
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // respeta mayúsculas/minúsculas
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
