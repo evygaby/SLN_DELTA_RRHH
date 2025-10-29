@@ -90,8 +90,16 @@ namespace Api.Controllers
         public async Task<IActionResult> GCENTROCOSTO2(string usu, string contrasena)
 
         {
+            try { 
             grupo_centrocosto paises = new grupo_centrocosto();
-            return Ok(_contextp.consultaRAW(paises, "select * from grupo_centrocosto", usu, contrasena));
+
+                return Ok(_contextp.consultaRAW(paises, "select * from grupo_centrocosto", usu, contrasena));
+                 }catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(new {message=ex.Message
+    });
+            };
         }
         [HttpGet]
         public async Task<IActionResult> CUENTAS(string usu, string contrasena, int idempresa)
