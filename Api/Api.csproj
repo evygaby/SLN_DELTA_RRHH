@@ -41,4 +41,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="EmailTemplates\Plantilla.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

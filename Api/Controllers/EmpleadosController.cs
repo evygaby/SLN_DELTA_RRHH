@@ -494,11 +494,21 @@ return BadRequest(new { message = ex.Message });
             [HttpPut]
         public async Task<IActionResult> Put(int id, [FromBody] EMP value, string usu, string contrasena)
         {
-            try { 
-            
-     
-         
-            var res5 = new Dictionary<bool, string>();
+            try {
+                if (value.ACTIVO == "N")
+                {
+                    DBOracle dB1 = new DBOracle();
+                    ClsConfig.cadenaoracle = dB1.crearcadena(ClsConfig.DATA_SOURCE, usu, contrasena);
+                    var login = dB1.prestamosactivos("proc_k_rrhh_web.qry_prestamos_activos", value.CODEMP, usu, contrasena);
+                    if (login)
+                    {
+                        return BadRequest(new { message = "No puede desactivar personal con deuda pendiente" });
+
+                    }
+                }
+               
+
+                var res5 = new Dictionary<bool, string>();
             var res4 = new Dictionary<bool, string>();
             var res3 = new Dictionary<bool, string>();
             var res2 = new Dictionary<bool, string>();

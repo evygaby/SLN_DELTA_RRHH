@@ -425,6 +425,97 @@ namespace Api
             return ok;
 
         }
+        public bool prestamosactivos(string SpName,int codemp, string? usu, string? pass)
+        {
+            bool ok = true;
+            try
+            {
+                // Si no esta conectado, se conecta.
+                if (!IsConected())
+                {
+                    info.CadenaConexion = crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+                    ok = Conectar();
+                }
+                if (ok)
+                {
+                    if ((ora_DataReader != null))
+                    {
+                        ora_DataReader.Close();
+                        ora_DataReader.Dispose();
+                    }
+                    OracleCommand OraCommand = new OracleCommand();
+                    OraCommand.Connection = ora_Connection;
+                    OraCommand.CommandText = SpName;
+                    OraCommand.CommandType = CommandType.StoredProcedure;
+                    OraCommand.Parameters.Add("pn_codemp", codemp);
+
+                    OraCommand.Parameters.Add("pn_respuesta", OracleDbType.Int32);
+                    //OraCommand.Parameters["existe"].Size = 100;
+                    OraCommand.Parameters["pn_respuesta"].Direction = ParameterDirection.Output;
+                    ora_DataReader = OraCommand.ExecuteReader();
+                    var kiekis = Convert.ToString(OraCommand.Parameters["pn_respuesta"].Value);
+                    if (kiekis == "0")
+                    {
+
+                        ok = false;
+
+                    }
+                    else
+                    {
+                        ok = true;
+                    }
+
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                AsignarError(ref ex);
+                ok = false;
+            }
+
+            return ok;
+
+        }
+        public bool habilitaficha(string SpName, int codemp, string? usu, string? pass)
+        {
+            bool ok = true;
+            try
+            {
+                // Si no esta conectado, se conecta.
+                if (!IsConected())
+                {
+                    info.CadenaConexion = crearcadena(ClsConfig.DATA_SOURCE, usu, pass);
+                    ok = Conectar();
+                }
+                if (ok)
+                {
+                    if ((ora_DataReader != null))
+                    {
+                        ora_DataReader.Close();
+                        ora_DataReader.Dispose();
+                    }
+                    OracleCommand OraCommand = new OracleCommand();
+                    OraCommand.Connection = ora_Connection;
+                    OraCommand.CommandText = SpName;
+                    OraCommand.CommandType = CommandType.StoredProcedure;
+                    OraCommand.Parameters.Add("pn_codemp", codemp);
+                    ora_DataReader = OraCommand.ExecuteReader();
+                    return true;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                AsignarError(ref ex);
+                ok = false;
+            }
+
+            return ok;
+
+        }
+
         public bool MenuPerfilUsuario(int codEmpleado, string usu, string pass)
         {
             bool ok = true;
