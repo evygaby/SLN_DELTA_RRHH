@@ -49,6 +49,13 @@ namespace Api
         private static string _GuardarLog;
 
 
+
+        public static string? cadenaaccess { get; set; }
+        public static string? AccessDatabasePath { get; set; }
+        public static string? AccessDatabasePassword { get; set; }
+        public static string? AccessProvider { get; set; }
+
+
         public static string NombreApp
         {
             get

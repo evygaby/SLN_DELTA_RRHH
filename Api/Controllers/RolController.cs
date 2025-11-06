@@ -29,5 +29,20 @@ namespace Api.Controllers
                      .ToList();
             return Json(lista);
         }
+        [HttpGet]
+        public async Task<IActionResult> ComparativoRolesMensual(string usu, string pass, Int32 empresa, DateTime? fecha)
+        {
+            var ffecha = fecha.HasValue ? "'" + fecha.Value.ToString("dd/MM/yyyy") + "'" : "null";
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "DEVELOPER1.prock_personal_web.QRY_COMPARAMENSUAL(" + empresa + "," + ffecha + ",:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
     }
 }
