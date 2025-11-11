@@ -17,7 +17,7 @@ namespace Api.Controllers
     public class EmpleadosController : Controller
     {
         private readonly IDeltaContextProcedures _contextp;
-        private readonly IWebHostEnvironment _env;
+       
         private readonly ILogger<EmpleadosController> _logger;
         public EmpleadosController(ILogger<EmpleadosController> logger, IDeltaContextProcedures deltaContextProcedures)
         {
