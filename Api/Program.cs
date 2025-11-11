@@ -14,6 +14,8 @@ DBOracle dB = new DBOracle();
 ClsConfig.USER_ID = builder.Configuration.GetSection("USER_ID").Value;
 ClsConfig.DATA_SOURCE = builder.Configuration.GetSection("DATA_SOURCE").Value;
 ClsConfig.PASSWORD = builder.Configuration.GetSection("PASSWORD").Value;
+ClsConfig.AccessDelta = builder.Configuration.GetSection("AccessDelta").Value;
+ClsConfig.AccessPresco   = builder.Configuration.GetSection("AccessPresco").Value;
 var connectioinOracle = dB.crearcadena(ClsConfig.DATA_SOURCE, ClsConfig.USER_ID, ClsConfig.PASSWORD);
 
 ClsConfig.cadenaoracle = connectioinOracle;
@@ -45,7 +47,7 @@ builder.Services
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy = null; // respeta mayúsculas/minúsculas
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // respeta mayï¿½sculas/minï¿½sculas
     });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
