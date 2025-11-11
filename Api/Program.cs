@@ -4,6 +4,7 @@ using Api.Services.Interfaces;
 using Infra.Logging;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
+using System.Data.OleDb;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,13 +17,25 @@ ClsConfig.PASSWORD = builder.Configuration.GetSection("PASSWORD").Value;
 ClsConfig.AccessDelta = builder.Configuration.GetSection("AccessDelta").Value;
 ClsConfig.AccessPresco   = builder.Configuration.GetSection("AccessPresco").Value;
 var connectioinOracle = dB.crearcadena(ClsConfig.DATA_SOURCE, ClsConfig.USER_ID, ClsConfig.PASSWORD);
+
 ClsConfig.cadenaoracle = connectioinOracle;
+var accessSection = builder.Configuration.GetSection("AccessDatabase");
+ClsConfig.AccessDatabasePath = accessSection.GetValue<string>("Path");
+ClsConfig.AccessDatabasePassword = accessSection.GetValue<string>("Password");
+ClsConfig.AccessProvider = accessSection.GetValue<string>("Provider");
+if (!string.IsNullOrWhiteSpace(ClsConfig.AccessDatabasePath))
+{
+    var accessConnectionString = DBAccess.CrearCadena(ClsConfig.AccessDatabasePath, ClsConfig.AccessDatabasePassword, ClsConfig.AccessProvider);
+    ClsConfig.cadenaaccess = accessConnectionString;
+    builder.Services.AddScoped<DBAccess>(_ => new DBAccess(accessConnectionString));
+}
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Logging.ClearProviders();
 builder.Logging.AddCustomLogging("C:\\Logs\\Dinamico");
 builder.Services.AddDbContext<ModelOracleContext>(options => options.UseOracle(connectioinOracle));
 builder.Services.AddScoped<IDeltaContextProcedures, DeltaContextProcedures>();
 builder.Services.AddScoped<IReportesService, ReportesService>();
+
 builder.Services.AddControllers();
 builder.Services
     .AddControllers()

@@ -2,16 +2,9 @@
 using Api.Services.Interfaces;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualBasic;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 namespace Api.Controllers
 
 {
