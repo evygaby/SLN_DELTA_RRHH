@@ -37,6 +37,8 @@ namespace Api
         public static string? DATA_SOURCE { get; set; }
         public static string? USER_ID { get; set; }
         public static string? PASSWORD { get; set; }
+public static string? AccessDelta { get; set; }
+public static string? AccessPresco { get; set; }
 
 
         public static string? cadenaoracle { get; set; }

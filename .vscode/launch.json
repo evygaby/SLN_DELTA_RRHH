@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Api",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build Api",
+      "program": "${workspaceFolder}/Api/bin/Debug/net8.0/Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Api",
+      "console": "internalConsole"
+    }
+,{
+      "name": "Launch Angular App",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4200", 
+      "webRoot": "${workspaceFolder}/DeltaRHH_FontEnd/src",
+      "sourceMaps": true
+    }
+   
+  ]
+}
