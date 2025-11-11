@@ -542,6 +542,20 @@ namespace Api.Controllers
             return Json(lista);
         }
         [HttpGet]
+        public async Task<IActionResult> ListaEmpleadosCedulasinEmpresa(string usu, string pass)
+        {
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "DEVELOPER1.prock_personal_web.qryListaEmpleados(:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
+        [HttpGet]
         public async Task<IActionResult>FechaProceso(string usu,string pass,Int32 empresa)
         {
             var contextoOracle = new ModelOracleContext();
