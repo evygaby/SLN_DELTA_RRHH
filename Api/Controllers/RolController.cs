@@ -44,5 +44,19 @@ namespace Api.Controllers
                      .ToList();
             return Json(lista);
         }
+        [HttpGet]
+        public async Task<IActionResult> ObtenerDecimos(string usu, string pass, Int32 empresa,DateTime fecha)
+        {
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+            var sentencia = "DEVELOPER1.RH_PROCESOS.QRY_ASIGNADECIMOS(" + empresa + "," + fecha.ToString("yyyy") + ",:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista);
+        }
     }
 }

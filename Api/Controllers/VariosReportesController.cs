@@ -2,6 +2,7 @@
 using Api.Services.Interfaces;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualBasic;
 using System.Data;
 using System.Text;
@@ -56,9 +57,19 @@ namespace Api.Controllers
         public async Task<IActionResult> Cumpleanios(string usu, string pass, int idempresa)
 
         {
-            CumpleaniosPersonal Lista = new CumpleaniosPersonal();
-            return Ok(_contextp.CallProceduresConsula(Lista, "prock_personal_web.QRY_CUMPLE_EMPLEADOS(" + idempresa + ",null,null,:1)", usu, pass));
-        }
+            var contextoOracle = new ModelOracleContext();
+            DeltaContextProcedures obj = new DeltaContextProcedures(contextoOracle);
+
+            var sentencia = "prock_personal_web.QRY_CUMPLE_EMPLEADOS(" + idempresa + ",null,null,:1)";
+            DataTable dt = obj.CallProceduresConsulaDT(sentencia, usu, pass);
+           
+            var lista = dt.AsEnumerable()
+                     .Select(row => dt.Columns
+                         .Cast<DataColumn>()
+                         .ToDictionary(col => col.ColumnName, col => row[col]))
+                     .ToList();
+            return Json(lista); ;
+            }
 
         [HttpGet]
         [Route("api/checklist")]
